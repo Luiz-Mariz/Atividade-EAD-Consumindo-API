@@ -45,3 +45,54 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("estado").value = "";
   }
 });
+
+document.getElementById('formCadastro').addEventListener('submit', function(event){
+  event.preventDefault();
+
+  const nome = document.getElementById("nome").value;
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+  const cep = document.getElementById("cep").value;
+  const endereco = document.getElementById("endereco").value;
+  const numero = document.getElementById("numero").value;
+  const bairro = document.getElementById("bairro").value;
+  const cidade = document.getElementById("cidade").value;
+  const estado = document.getElementById("estado").value;
+
+  const funcionario = {
+    nome: nome,
+    email: email,
+    senha: senha,
+    endereco: endereco,
+    numero: numero,
+    bairro: bairro,
+    cidade: cidade,
+    estado: estado
+  };
+
+  // Chama a função para enviar os dados para a API
+  enviarFuncionario(funcionario);
+});
+
+function enviarFuncionario(funcionario) {
+  fetch('http://localhost:8080/api/funcionarios', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(funcionario)
+  })
+  .then(response => {
+    if (!response.ok) {
+      console.error("Erro na requisição:", response.statusText);
+      return;
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log("Resposta da API:", data);
+  })
+  .catch(error => {
+    console.error("Erro ao enviar dados:", error);
+  });
+}
