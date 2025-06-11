@@ -63,6 +63,7 @@ document.getElementById('formCadastro').addEventListener('submit', function(even
     nome: nome,
     email: email,
     senha: senha,
+    cep: cep,
     endereco: endereco,
     numero: numero,
     bairro: bairro,
@@ -70,7 +71,7 @@ document.getElementById('formCadastro').addEventListener('submit', function(even
     estado: estado
   };
 
-  // Chama a função para enviar os dados para a API
+ 
   enviarFuncionario(funcionario);
 });
 
@@ -84,7 +85,7 @@ function enviarFuncionario(funcionario) {
   })
   .then(response => {
     if (!response.ok) {
-      console.error("Erro na requisição:", response.statusText);
+      console.error("Erro na requisição:", error);
       return;
     }
     return response.json();

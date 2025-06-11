@@ -1,35 +1,51 @@
-document.getElementById('formLogin').addEventListener('submit', function (e) {
-  e.preventDefault();
+document.getElementById('formLogin').addEventListener('submit', function (event) {
+    event.preventDefault();
 
-  const email = document.getElementById('email').value.trim();
-  const senha = document.getElementById('senha').value.trim();
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
 
-  // Exemplo de verificação simples (você pode adaptar para autenticação real depois)
-  if (email === '' || senha === '') {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Campos obrigatórios',
-      text: 'Por favor, preencha todos os campos.'
-    });
-    return;
-  }
+    const login = {
+        email: email,
+        senha: senha
+    };
 
-  // Simulando login com email e senha específicos
-  if (email === 'admin@teste.com' && senha === '123456') {
-    Swal.fire({
-      icon: 'success',
-      title: 'Login realizado com sucesso!',
-      showConfirmButton: false,
-      timer: 2000
-    }).then(() => {
-      // Redirecionar após login (simulação)
-      window.location.href = 'cadastro.html';
-    });
-  } else {
-    Swal.fire({
-      icon: 'error',
-      title: 'Email ou senha inválidos',
-      text: 'Verifique suas credenciais e tente novamente.'
-    });
-  }
+    enviarLogin(login);
 });
+
+function enviarLogin(login) {
+    fetch('http://localhost:8080/api/funcionarios/login', {  
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(login)
+    })
+    .then(response => {
+        if (!response.ok) {
+            // Caso a resposta não seja 2xx (erro no servidor ou erro de login)
+            return Promise.reject('Email ou senha inválidos');
+        }
+        return response.json();  // Continuar se a resposta for bem-sucedida
+    })
+    .then(data => {
+        // Checagem da resposta com base no status
+        if (data === "Login bem-sucedido!") {
+            console.log("Login bem-sucedido:", data);
+            window.location.href = "dashboard.html";  // Redireciona para o painel principal
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Algo deu errado! Tente novamente.',
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Erro ao enviar dados:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: error || 'Erro ao tentar fazer login. Tente novamente.',
+        });
+    });
+}
